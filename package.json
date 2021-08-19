@@ -26,5 +26,9 @@
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-jest": "^24.4.0",
     "jest": "^27.0.6"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "nock": "^13.1.1"
   }
 }
