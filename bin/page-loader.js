@@ -1,3 +1,4 @@
-import pageLoader from '../index.js';
+#!/usr/bin/env node
+import { cli } from '../index.js';
 
-pageLoader();
+cli();
