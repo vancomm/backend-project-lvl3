@@ -1,5 +1,5 @@
 import foo from '../src/index.js';
 
-test('', () => {
+test('sample test', () => {
   expect(foo()).toEqual(5);
-})
+});
