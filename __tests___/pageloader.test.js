@@ -4,18 +4,15 @@ import fs from 'fs/promises';
 import path from 'path';
 import nock from 'nock';
 import __dirname from '../src/dirname.js';
-import pageLoader, { makeFileName } from '../index.js';
+import PageLoader from '../index.js';
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-
-// const fixturePath = getFixturePath('sample.html');
 
 const url = new URL('https://sample.com/path/to/site.html');
 
 const dirprefix = path.join(os.tmpdir(), 'page-loader-');
 const filename = 'sample-com-path-to-site.html';
 
-// let expected;
 let dirpath;
 let filepath;
 
@@ -25,26 +22,18 @@ beforeEach(async () => {
 });
 
 test.each([
-  ['https://google.com', 'google-com.html'],
-  ['https://sample.com/path/to/site.html', 'sample-com-path-to-site.html'],
-  ['https://ru.hexlet.io/courses', 'ru-hexlet-io-courses.html'],
-])('makeFileName: %s', (urlString, expected) => {
-  const input = new URL(urlString);
-  const actual = makeFileName(input);
-  expect(actual).toEqual(expected);
-});
-
-test.each([
   ['basic'],
   ['hexlet'],
 ])('pageLoader: %s', async (fixture) => {
+  const pageLoader = new PageLoader(url.toString(), dirpath);
+
   const inputPath = getFixturePath(`${fixture}-input.html`);
   const input = await fs.readFile(inputPath, 'utf-8');
   const scope = nock(url.origin)
     .get(url.pathname)
     .reply(200, input);
 
-  const actual = await pageLoader(url.toString(), dirpath);
+  const actual = await pageLoader.load(url.toString(), dirpath);
   const expected = filepath;
 
   expect(scope.isDone()).toBe(true);
