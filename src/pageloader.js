@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable max-len */
 /* eslint-disable class-methods-use-this */
 
@@ -20,28 +21,33 @@ import cheerio from 'cheerio';
 
 const normalize = (string) => string.replace(/[^\da-z]/gi, '-');
 
+const isLocalLink = (link) => link.startsWith('/');
+
 class PageLoader {
   constructor(urlString, dirpath = process.cwd()) {
     this.url = new URL(urlString);
     this.dirpath = dirpath;
   }
 
-  getNormalizedBasename() {
-    return normalize(this.url.hostname);
-  }
-
   makeFilename() {
-    const basename = this.getNormalizedBasename();
+    const hostname = normalize(this.url.hostname);
     const pathname = normalize(this.url.pathname.slice(1, this.url.pathname.indexOf('.')));
     const extension = this.url.pathname.slice(this.url.pathname.indexOf('.') + 1);
-    if (extension === '') return `${basename}-${pathname}.html`;
-    return `${basename}-${pathname}.${extension}`;
+    if (extension === '') return `${hostname}-${pathname}.html`;
+    return `${hostname}-${pathname}.${extension}`;
   }
 
   localizeLinks(html) {
+    const { url } = this;
     const $ = cheerio.load(html);
-    $('img').map((i, img) => {
-      const oldSrc = $(img).attr('src');
+    $('img').each(function () {
+      const src = $(this).attr('src');
+      if (isLocalLink(src)) {
+        const filename = normalize(src);
+        const pathname = path.dirname(url.pathname);
+        const newSrc = src;
+        $(this).attr('src', newSrc);
+      }
     });
   }
 
