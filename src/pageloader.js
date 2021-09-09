@@ -30,7 +30,7 @@ const downloadImage = (url, savePath) => new Promise((resolve, reject) => {
 });
 
 const processFile = () => {
-
+  const a = 0;
 };
 
 const pageLoader = (urlString, dirpath) => {
